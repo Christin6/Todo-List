@@ -1,8 +1,13 @@
 import "./styles.css";
 import { createToDo } from "./todos.js";
 import { createFolder } from "./folder.js";
+import { initializeDom } from "./dom.js";
+
+const domState = initializeDom()
 
 const todo = createToDo("Buy milk", "Get 2% milk", "2024-01-15", "high", "From grocery store");
+domState.createTodoDom("Buy milk", "Get 2% milk", "2024-01-15", "high", "From grocery store");
+
 const todo2 = createToDo("Buy sauce", "Get 2% milk", "2024-01-15", "high", "From grocery store");
 
 todo.printOut();

@@ -1,6 +1,6 @@
 const canAddItem = (state) => {
 	return {
-		addItem: (...item) => state.items.push(...item),
+		addItem: (...item) => state.items.push(...item)
 	};
 };
 
