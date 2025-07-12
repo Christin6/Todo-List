@@ -5,8 +5,8 @@ const canAddFolderToSidebar = () => {
 	return {};
 };
 
-const createTodoDom = (state) => (title, desc, dueDate, priority, notes) => {
-	const todo = createToDo(title, desc, dueDate, priority, notes);
+const createTodoDom = (state) => (title, desc, dueDate, priority) => {
+	const todo = createToDo(title, desc, dueDate, priority);
 
 	let checkBox = document.createElement("input");
 	checkBox.type = "checkbox";
@@ -25,18 +25,16 @@ const createTodoDom = (state) => (title, desc, dueDate, priority, notes) => {
 	dueDateP.classList.add("todo-due");
 	dueDateP.innerHTML = todo.dueDate;
 
-	let noteP = document.createElement("p");
-	noteP.classList.add("todo-note");
-	noteP.innerHTML = todo.notes;
-
 	let delBtn = document.createElement("button");
 	delBtn.classList.add("todo-del-btn");
-	delBtn.innerHTML = "X";
+	delBtn.innerHTML = "🗑️";
 
 	let div = document.createElement("div");
-	div.append(titleP, descP, dueDateP, noteP);
+    div.classList.add("todo-info-div");
+	div.append(titleP, descP, dueDateP);
 
 	let container = document.createElement("div");
+    container.classList.add("todo-container");
 	container.append(checkBox, div, delBtn);
 
 	checkBox.addEventListener("change", (event) => {
@@ -67,9 +65,10 @@ export const initializeDom = () => {
 		inboxBtn: document.getElementById("inbox-btn"),
 		todayBtn: document.getElementById("today-btn"),
 		tomorrowBtn: document.getElementById("tomorrow-btn"),
-		listsSect: document.getElementById("lists"),
+		foldersSect: document.getElementById("folders"),
 		newTodoBtn: document.getElementById("new-todo-btn"),
 		todoList: document.getElementById("todo-list"),
+        newFolderBtn: document.getElementById("new-folder-btn")
 	};
 
 	return {
@@ -82,8 +81,8 @@ export const initializeDom = () => {
 		get tomorrowBtn() {
 			return state.tomorrowBtn;
 		},
-		get listsSect() {
-			return state.listsSect;
+		get foldersSect() {
+			return state.foldersSect;
 		},
 		get newTodoBtn() {
 			return state.newTodoBtn;
@@ -91,6 +90,9 @@ export const initializeDom = () => {
 		get todoList() {
 			return state.todoList;
 		},
+        get newFolderBtn() {
+            return state.newFolderBtn;
+        },
 
 		...canCreateTodoDom(state),
 	};

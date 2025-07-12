@@ -8,16 +8,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
     </head>
     <body>
-        <nav>
+        <nav id="side-bar">
+            <button id="new-todo-btn">+ Add Task</button>
             <section>
-                <button id="inbox-btn">Inbox</button>
-                <button id="today-btn">Today</button>
-                <button id="tomorrow-btn">Tomorrow</button>
+                <button id="inbox-btn">📬 Inbox</button>
+                <button id="today-btn">☀️ Today</button>
+                <button id="tomorrow-btn">⏩ Tomorrow</button>
             </section>
-            <section id="lists"></section>
+            <section id="folders">
+
+            </section>
+            <button id="new-folder-btn">+ New Folder</button>
         </nav>
         <main>
-            <button id="new-todo-btn">New Todo</button>
             <section id="todo-list"></section>
         </main>
     </body>

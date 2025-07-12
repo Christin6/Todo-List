@@ -5,10 +5,10 @@ import { initializeDom } from "./dom.js";
 
 const domState = initializeDom()
 
-const todo = createToDo("Buy milk", "Get 2% milk", "2024-01-15", "high", "From grocery store");
-domState.createTodoDom("Buy milk", "Get 2% milk", "2024-01-15", "high", "From grocery store");
+const todo = createToDo("Buy milk", "Get 2% milk", "2024-01-15", "high");
+domState.createTodoDom("Buy milk", "Get 2% milk", "2024-01-15", "high");
 
-const todo2 = createToDo("Buy sauce", "Get 2% milk", "2024-01-15", "high", "From grocery store");
+const todo2 = createToDo("Buy sauce", "Get 2% milk", "2024-01-15", "high");
 
 todo.printOut();
 

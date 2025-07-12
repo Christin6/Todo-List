@@ -28,19 +28,12 @@ const canChangePriority = (state) => {
 	};
 };
 
-const canChangeNotes = (state) => {
-	return {
-		changeNotes: (newNotes) => state.notes = newNotes,
-	};
-};
-
-export const createToDo = (title, description, dueDate, priority, notes) => {
+export const createToDo = (title, description, dueDate, priority) => {
 	let state = {
 		title,
 		description,
 		dueDate,
 		priority,
-		notes,
         checked: false
 	};
 
@@ -57,9 +50,6 @@ export const createToDo = (title, description, dueDate, priority, notes) => {
 		get priority() {
 			return state.priority;
 		},
-		get notes() {
-			return state.notes;
-		},
         get checked() {
 			return state.checked;
 		},
@@ -68,7 +58,6 @@ export const createToDo = (title, description, dueDate, priority, notes) => {
 		...canChangeDescription(state),
 		...canChangeDueDate(state),
 		...canChangePriority(state),
-		...canChangeNotes(state),
 
 		...canPrintOut(state.title),
 	};
