@@ -62,8 +62,8 @@ const canCreateTodoDom = (state) => {
 
 const createInputDialog = (target) => {
 	const dialog = `<dialog role="dialog" id="new-todo-input-dialog">
-                <input type="text" name="title" id="title-input">
-                <input type="text" name="desc" id="desc-input">
+                <input type="text" name="title" id="title-input" placeholder="Title">
+                <input type="text" name="desc" id="desc-input" placeholder="Description">
                 <input type="date" name="due-date" id="duedate-input">
                 <input type="time" name="due-time" id="duetime-input">
                 <select name="priority" id="priority-input">
@@ -87,7 +87,14 @@ export const initializeDom = () => {
 		newTodoBtn: document.getElementById("new-todo-btn"),
 		todoList: document.getElementById("todo-list"),
         newFolderBtn: document.getElementById("new-folder-btn"),
-		inputDialogContainer: document.getElementById("new-todo-input-dialog-container")
+		inputDialogContainer: document.getElementById("new-todo-input-dialog-container"),
+
+		defaultPriority: new Map([
+			["🔴Priority 1", "red"],
+			["🟡Priority 2", "yellow"],
+			["🟢Priority 3", "green"],
+			["⚪Priority 4", "white"]
+		])
 	};
 
 	createInputDialog(state.inputDialogContainer);
@@ -97,6 +104,13 @@ export const initializeDom = () => {
 	state.newTodoDuedateInput = document.getElementById("duedate-input");
 	state.newTodoDuetimeInput = document.getElementById("duetime-input");
 	state.newTodoPriorityInput = document.getElementById("priority-input");
+
+	for (const [key, value] of state.defaultPriority) {
+		const newOption = document.createElement("option");
+		newOption.value = value;
+		newOption.innerText = key;
+		state.newTodoPriorityInput.appendChild(newOption);
+	}
 
 	state.newTodoBtn.addEventListener("click", () => {
 		state.newTodoInput.showModal();
