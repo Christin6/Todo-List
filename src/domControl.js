@@ -60,6 +60,24 @@ const canCreateTodoDom = (state) => {
 	};
 };
 
+const createInputDialog = (target) => {
+	const dialog = `<dialog role="dialog" id="new-todo-input-dialog">
+                <input type="text" name="title" id="title-input">
+                <input type="text" name="desc" id="desc-input">
+                <input type="date" name="due-date" id="duedate-input">
+                <input type="time" name="due-time" id="duetime-input">
+                <select name="priority" id="priority-input">
+                    <option value="">--Select the priority--</option>
+                </select>
+
+                <form method="dialog">
+                    <button type="submit" id="submit-todo-input">Add Todo</button>
+                    <button>Close</button>
+                </form>
+            </dialog>`;
+	target.innerHTML = dialog;
+};
+
 export const initializeDom = () => {
 	let state = {
 		inboxBtn: document.getElementById("inbox-btn"),
@@ -68,8 +86,21 @@ export const initializeDom = () => {
 		foldersSect: document.getElementById("folders"),
 		newTodoBtn: document.getElementById("new-todo-btn"),
 		todoList: document.getElementById("todo-list"),
-        newFolderBtn: document.getElementById("new-folder-btn")
+        newFolderBtn: document.getElementById("new-folder-btn"),
+		inputDialogContainer: document.getElementById("new-todo-input-dialog-container")
 	};
+
+	createInputDialog(state.inputDialogContainer);
+	state.newTodoInput = document.getElementById("new-todo-input-dialog");
+	state.newTodoTitleInput = document.getElementById("title-input");
+	state.newTodoDescInput = document.getElementById("desc-input");
+	state.newTodoDuedateInput = document.getElementById("duedate-input");
+	state.newTodoDuetimeInput = document.getElementById("duetime-input");
+	state.newTodoPriorityInput = document.getElementById("priority-input");
+
+	state.newTodoBtn.addEventListener("click", () => {
+		state.newTodoInput.showModal();
+	});
 
 	return {
 		get inboxBtn() {

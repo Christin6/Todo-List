@@ -1,7 +1,7 @@
 import "./styles.css";
 import { createToDo } from "./todos.js";
 import { createFolder } from "./folder.js";
-import { initializeDom } from "./dom.js";
+import { initializeDom } from "./domControl.js";
 
 const domState = initializeDom()
 
