@@ -17,9 +17,10 @@ const canDeleteItem = (state) => {
 	};
 };
 
-export const createFolder = (name) => {
+export const createFolder = (name, color) => {
 	let state = {
 		name,
+		color,
 		items: [],
 	};
 
@@ -29,6 +30,9 @@ export const createFolder = (name) => {
 		},
 		get items() {
 			return state.items;
+		},
+		get color() {
+			return state.color;
 		},
 
 		...canAddItem(state),
