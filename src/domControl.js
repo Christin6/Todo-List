@@ -77,6 +77,9 @@ const createTodoInputDialog = (target) => {
                 <select name="priority" id="priority-input">
                     <option value="">--Select the priority--</option>
                 </select>
+				<select name="todo-folder" id="folder-input">
+                    <option value="inbox">Inbox</option>
+                </select>
 
                 <form method="dialog">
                     <button type="submit" id="submit-todo-input">Add Todo</button>
@@ -97,6 +100,18 @@ const createFolderInputDialog = (target) => {
                 </form>
             </dialog>`;
 	target.innerHTML = dialog;
+};
+
+const canUpdateFolderOption = (state) => {
+	return {
+		updateFolderOption: (newFolderOption) => {
+			let newOption = document.createElement("option");
+			newOption.value = newFolderOption.name;
+			newOption.innerText = newFolderOption.name;
+
+			state.newTodoFolderInput.appendChild(newOption);
+		}
+	}
 };
 
 export const initializeDom = () => {
@@ -129,6 +144,7 @@ export const initializeDom = () => {
 	state.newTodoDescInput = document.getElementById("desc-input");
 	state.newTodoDuedateInput = document.getElementById("duedate-input");
 	state.newTodoPriorityInput = document.getElementById("priority-input");
+	state.newTodoFolderInput = document.getElementById("folder-input");
 	state.submitTodoInput = document.getElementById("submit-todo-input");
 
 	createFolderInputDialog(state.folderInputDialogContainer);
@@ -156,11 +172,9 @@ export const initializeDom = () => {
 		get state() {
 			return state;
 		},
-		get newTodoDuedateInput() {
-			return state.newTodoDuedateInput;
-		},
 
 		...canCreateTodoDom(state),
-		...canCreateFolderDom(state)
+		...canCreateFolderDom(state),
+		...canUpdateFolderOption(state)
 	};
 };

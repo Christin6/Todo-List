@@ -4,13 +4,14 @@ const canPrintOut = (text) => {
 	};
 };
 
-export const createToDo = (title, description, dueDate, priority) => {
+export const createToDo = (title, description, dueDate, priority, folder) => {
 	let state = {
 		title,
 		description,
 		dueDate: new Date(dueDate),
 		priority,
-        checked: false
+        checked: false,
+		folder
 	};
 
 	return {
@@ -28,6 +29,9 @@ export const createToDo = (title, description, dueDate, priority) => {
 		},
         get checked() {
 			return state.checked;
+		},
+		get folder() {
+			return state.folder;
 		},
 
 		set title(newTitle) {
