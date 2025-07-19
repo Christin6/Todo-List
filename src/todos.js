@@ -8,7 +8,7 @@ export const createToDo = (title, description, dueDate, priority) => {
 	let state = {
 		title,
 		description,
-		dueDate,
+		dueDate: new Date(dueDate),
 		priority,
         checked: false
 	};

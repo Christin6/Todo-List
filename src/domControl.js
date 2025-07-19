@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+
 const canCreateTodoDom = (state) => {
 	return {
 		createTodoDom: (todo, folder) => {
@@ -16,7 +18,7 @@ const canCreateTodoDom = (state) => {
 
 			let dueDateP = document.createElement("p");
 			dueDateP.classList.add("todo-due");
-			dueDateP.innerHTML = todo.dueDate;
+			dueDateP.innerHTML = format(todo.dueDate, "yyyy-MM-dd KK:mm a");
 
 			let delBtn = document.createElement("button");
 			delBtn.classList.add("todo-del-btn");
@@ -71,8 +73,7 @@ const createTodoInputDialog = (target) => {
 	const dialog = `<dialog role="dialog" id="new-todo-input-dialog">
                 <input type="text" name="title" id="title-input" placeholder="Title">
                 <input type="text" name="desc" id="desc-input" placeholder="Description">
-                <input type="date" name="due-date" id="duedate-input" value="2018-07-22">
-                <input type="time" name="due-time" id="duetime-input">
+                <input type="datetime-local" name="due-date" id="duedate-input" value=${format(Date(), "yyyy-MM-dd")}T${format(Date(), "HH:mm")}>
                 <select name="priority" id="priority-input">
                     <option value="">--Select the priority--</option>
                 </select>
@@ -127,7 +128,6 @@ export const initializeDom = () => {
 	state.newTodoTitleInput = document.getElementById("title-input");
 	state.newTodoDescInput = document.getElementById("desc-input");
 	state.newTodoDuedateInput = document.getElementById("duedate-input");
-	state.newTodoDuetimeInput = document.getElementById("duetime-input");
 	state.newTodoPriorityInput = document.getElementById("priority-input");
 	state.submitTodoInput = document.getElementById("submit-todo-input");
 
@@ -155,6 +155,9 @@ export const initializeDom = () => {
 	return {
 		get state() {
 			return state;
+		},
+		get newTodoDuedateInput() {
+			return state.newTodoDuedateInput;
 		},
 
 		...canCreateTodoDom(state),

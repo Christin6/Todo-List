@@ -2,6 +2,7 @@ import "./styles.css";
 import { createToDo } from "./todos.js";
 import { createFolder } from "./folder.js";
 import { initializeDom } from "./domControl.js";
+import { format } from "date-fns";
 
 const domState = initializeDom();
 
@@ -41,6 +42,7 @@ domState.state.submitTodoInput.addEventListener("click", () => {
     );
     folderContainer[0].addItem(item);
     domState.createTodoDom(item, folderContainer[0]);
+    console.log(item.dueDate);
 });
 
 domState.state.submitFolderInput.addEventListener("click", () => {
