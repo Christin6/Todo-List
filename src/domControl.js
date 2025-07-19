@@ -1,8 +1,8 @@
 import { format } from "date-fns";
 
-const canCreateTodoDom = (state) => {
+const canCreateTodoDom = () => {
 	return {
-		createTodoDom: (todo, folder) => {
+		createTodoDom: (todo, folder, target) => {
 			let checkBox = document.createElement("input");
 			checkBox.type = "checkbox";
 			checkBox.classList.add("todo-checkbox");
@@ -47,10 +47,10 @@ const canCreateTodoDom = (state) => {
 
 			delBtn.addEventListener("click", () => {
 				folder.deleteItem(todo);
-				state.todoList.removeChild(container);
+				target.removeChild(container);
 			});
 
-			state.todoList.appendChild(container);
+			target.appendChild(container);
 		}
 	};
 };
@@ -59,7 +59,7 @@ const canCreateFolderDom = (state) => {
 	return {
 		createFolderDom: (folder) => {
 			let titleBtn = document.createElement("button");
-			titleBtn.id = `${folder.name}-btn`;
+			titleBtn.classList.add("folder-btn");
 			titleBtn.innerText = folder.name;
 
 			titleBtn.style.borderLeft = `5px solid ${folder.color}`;
@@ -73,7 +73,7 @@ const createTodoInputDialog = (target) => {
 	const dialog = `<dialog role="dialog" id="new-todo-input-dialog">
                 <input type="text" name="title" id="title-input" placeholder="Title">
                 <input type="text" name="desc" id="desc-input" placeholder="Description">
-                <input type="datetime-local" name="due-date" id="duedate-input" value=${format(Date(), "yyyy-MM-dd")}T${format(Date(), "HH:mm")}>
+                <input type="datetime-local" name="due-date" id="duedate-input" value=${format(Date(), "yyyy-MM-dd")}T${format(Date(), "HH:mm")} min=${format(Date(), "yyyy-MM-dd")}T${format(Date(), "HH:mm")}>
                 <select name="priority" id="priority-input">
                     <option value="">--Select the priority--</option>
                 </select>
@@ -116,7 +116,6 @@ const canUpdateFolderOption = (state) => {
 
 export const initializeDom = () => {
 	let state = {
-		inboxBtn: document.getElementById("inbox-btn"),
 		todayBtn: document.getElementById("today-btn"),
 		tomorrowBtn: document.getElementById("tomorrow-btn"),
 		foldersSect: document.getElementById("folders"),
