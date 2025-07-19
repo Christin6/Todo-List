@@ -4,30 +4,6 @@ const canPrintOut = (text) => {
 	};
 };
 
-const canChangeTitle = (state) => {
-	return {
-		changeTitle: (newTitle) => state.title = newTitle,
-	};
-};
-
-const canChangeDescription = (state) => {
-	return {
-		changeDescription: (newDesc) => state.description = newDesc,
-	};
-};
-
-const canChangeDueDate = (state) => {
-	return {
-		changeDueDate: (newDueDate) => state.dueDate = newDueDate,
-	};
-};
-
-const canChangePriority = (state) => {
-	return {
-		changePriority: (newPriority) => state.priority = newPriority,
-	};
-};
-
 export const createToDo = (title, description, dueDate, priority) => {
 	let state = {
 		title,
@@ -54,10 +30,21 @@ export const createToDo = (title, description, dueDate, priority) => {
 			return state.checked;
 		},
 
-		...canChangeTitle(state),
-		...canChangeDescription(state),
-		...canChangeDueDate(state),
-		...canChangePriority(state),
+		set title(newTitle) {
+			state.title = newTitle;
+		},
+		set description(newDesc) {
+			state.description = newDesc;
+		},
+		set dueDate(newDueDate) {
+			state.dueDate = newDueDate;
+		},
+		set priority(newPriority) {
+			state.priority = newPriority;
+		},
+		set checked(newChecked) {
+			state.checked = newChecked;
+		},
 
 		...canPrintOut(state.title),
 	};

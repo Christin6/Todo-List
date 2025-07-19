@@ -3,18 +3,36 @@ import { createToDo } from "./todos.js";
 import { createFolder } from "./folder.js";
 import { initializeDom } from "./domControl.js";
 
-const domState = initializeDom()
+const domState = initializeDom();
 
-const todo = createToDo("Buy milk", "Get 2% milk", "2024-01-15", "high");
-domState.createTodoDom("Buy milk", "Get 2% milk", "2024-01-15", "high");
+const checkTitleInput = () => {
+    if (domState.state.newTodoTitleInput.value === "") {
+        return "New Todo"
+    };
+    return domState.state.newTodoTitleInput.value
+};
 
-const todo2 = createToDo("Buy sauce", "Get 2% milk", "2024-01-15", "high");
+const checkPriorityInput = () => {
+    if (domState.state.newTodoPriorityInput.value === "") {
+        return "white"
+    };
+    return domState.state.newTodoPriorityInput.value
+};
 
-todo.printOut();
+let folderContainer = [];
+folderContainer.push(createFolder("test"));
 
-let myTodoList = createFolder("My Todo List");
-myTodoList.addItem(todo, todo2);
-todo.changeTitle("nex");
+const todo = createToDo("Buy milk", "Get 2% milk", "2024-01-15", "red");
+domState.createTodoDom(todo, folderContainer[0]);
 
-console.log(myTodoList.items);
-console.log(myTodoList.items[0].title);
+domState.state.submitTodoInput.addEventListener("click", () => {
+
+    let item = createToDo(
+        checkTitleInput(), 
+        domState.state.newTodoDescInput.value, 
+        domState.state.newTodoDuedateInput.value, 
+        checkPriorityInput()
+    );
+    folderContainer[0].addItem(item);
+    domState.createTodoDom(item, folderContainer[0]);
+});
