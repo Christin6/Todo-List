@@ -75,6 +75,10 @@ main {
     padding: 7px 22px;
 }
 
+#folders {
+	margin-top: 1rem;
+}
+
 .todo-container {
 	display: grid;
 	grid-template-columns: 1fr 12fr 1fr;
@@ -110,16 +114,3 @@ main {
 .todo-del-btn:hover {
     background-color: red;
 }
-
-/* 
-
-
-#user-input {
-  width: 80%;
-}
-
-#user-input:focus {
-  outline: none;
-  border: 3px solid #ffff00;
-}
-  */
