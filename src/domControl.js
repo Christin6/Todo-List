@@ -1,71 +1,91 @@
 import { format } from "date-fns";
+import { searchFolder, searchTodoBasedOnFolder } from "./util";
 
-const canCreateTodoDom = () => {
-	return {
-		createTodoDom: (todo, folder, target) => {
-			let checkBox = document.createElement("input");
-			checkBox.type = "checkbox";
-			checkBox.classList.add("todo-checkbox");
-			checkBox.checked = todo.checked;
+const createTodoDom = (todo, folder, target) => {
+	let checkBox = document.createElement("input");
+	checkBox.type = "checkbox";
+	checkBox.classList.add("todo-checkbox");
+	checkBox.checked = todo.checked;
 
-			let titleP = document.createElement("p");
-			titleP.classList.add("todo-title");
-			titleP.innerHTML = todo.title;
+	let titleP = document.createElement("p");
+	titleP.classList.add("todo-title");
+	titleP.innerHTML = todo.title;
 
-			let descP = document.createElement("p");
-			descP.classList.add("todo-desc");
-			descP.innerHTML = todo.description;
+	let descP = document.createElement("p");
+	descP.classList.add("todo-desc");
+	descP.innerHTML = todo.description;
 
-			let dueDateP = document.createElement("p");
-			dueDateP.classList.add("todo-due");
-			dueDateP.innerHTML = format(todo.dueDate, "yyyy-MM-dd KK:mm a");
+	let dueDateP = document.createElement("p");
+	dueDateP.classList.add("todo-due");
+	dueDateP.innerHTML = format(todo.dueDate, "yyyy-MM-dd KK:mm a");
 
-			let delBtn = document.createElement("button");
-			delBtn.classList.add("todo-del-btn");
-			delBtn.innerHTML = "🗑️";
+	let delBtn = document.createElement("button");
+	delBtn.classList.add("todo-del-btn");
+	delBtn.innerHTML = "🗑️";
 
-			let div = document.createElement("div");
-			div.classList.add("todo-info-div");
-			div.append(titleP, descP, dueDateP);
+	let div = document.createElement("div");
+	div.classList.add("todo-info-div");
+	div.append(titleP, descP, dueDateP);
 
-			let container = document.createElement("div");
-			container.classList.add("todo-container");
-			container.append(checkBox, div, delBtn);
+	let container = document.createElement("div");
+	container.classList.add("todo-container");
+	container.append(checkBox, div, delBtn);
 
-			container.style.borderLeft = `5px solid ${todo.priority}`;
+	container.style.borderLeft = `5px solid ${todo.priority}`;
 
-			checkBox.addEventListener("change", () => {
-				todo.checked = !todo.checked;
-				if (todo.checked) {
-					div.style.textDecoration = "line-through";
-					div.style.color = "#828282";
-				} else {
-					div.style.textDecoration = "none";
-					div.style.color = "#000";
-				}
-			});
-
-			delBtn.addEventListener("click", () => {
-				folder.deleteItem(todo);
-				target.removeChild(container);
-			});
-
-			target.appendChild(container);
+	checkBox.addEventListener("change", () => {
+		todo.checked = !todo.checked;
+		if (todo.checked) {
+			div.style.textDecoration = "line-through";
+			div.style.color = "#828282";
+		} else {
+			div.style.textDecoration = "none";
+			div.style.color = "#000";
 		}
+	});
+
+	delBtn.addEventListener("click", () => {
+		folder.deleteItem(todo);
+		target.removeChild(container);
+	});
+
+	target.appendChild(container);
+};
+
+const canCreateTodoDom = (state) => {
+	return {
+		createTodoDom: (todo, folder, target) => createTodoDom(todo, folder, target),
 	};
 };
 
 const canCreateFolderDom = (state) => {
 	return {
-		createFolderDom: (folder) => {
+		createFolderDom: (folder, folderContainer) => {
 			let titleBtn = document.createElement("button");
 			titleBtn.classList.add("folder-btn");
 			titleBtn.innerText = folder.name;
 
 			titleBtn.style.borderLeft = `5px solid ${folder.color}`;
 
+			titleBtn.addEventListener("click", () => {
+				state.currentView = folder.name;
+				state.todoList.innerHTML = "";
+
+				let todo = searchTodoBasedOnFolder(
+					folder.name,
+					folderContainer
+				);
+				for (let i = 0; i < todo.length; i++) {
+					createTodoDom(
+						todo[i],
+						searchFolder(todo[i].folder, folderContainer),
+						state.todoList
+					);
+				}
+			});
+
 			state.foldersSect.appendChild(titleBtn);
-		}
+		},
 	};
 };
 
@@ -73,12 +93,18 @@ const createTodoInputDialog = (target) => {
 	const dialog = `<dialog role="dialog" id="new-todo-input-dialog">
                 <input type="text" name="title" id="title-input" placeholder="Title">
                 <input type="text" name="desc" id="desc-input" placeholder="Description">
-                <input type="datetime-local" name="due-date" id="duedate-input" value=${format(Date(), "yyyy-MM-dd")}T${format(Date(), "HH:mm")} min=${format(Date(), "yyyy-MM-dd")}T${format(Date(), "HH:mm")}>
+                <input type="datetime-local" name="due-date" id="duedate-input" value=${format(
+					new Date(),
+					"yyyy-MM-dd"
+				)}T${format(new Date(), "HH:mm")} min=${format(
+		new Date(),
+		"yyyy-MM-dd"
+	)}T${format(new Date(), "HH:mm")}>
                 <select name="priority" id="priority-input">
                     <option value="">--Select the priority--</option>
                 </select>
 				<select name="todo-folder" id="folder-input">
-                    <option value="inbox">Inbox</option>
+                    <option value="📬 Inbox">📬 Inbox</option>
                 </select>
 
                 <form method="dialog">
@@ -110,8 +136,14 @@ const canUpdateFolderOption = (state) => {
 			newOption.innerText = newFolderOption.name;
 
 			state.newTodoFolderInput.appendChild(newOption);
-		}
-	}
+		},
+	};
+};
+
+const canCleanTodoContainer = (state) => {
+	return {
+		cleanTodoContainer: () => state.todoList.innerHTML = "",
+	};
 };
 
 export const initializeDom = () => {
@@ -135,6 +167,7 @@ export const initializeDom = () => {
 			["🟢Low", "green"],
 			["⚪Neutral", "white"],
 		]),
+		currentView: "all", // or "tomorrow", or "today", or what folder is opened
 	};
 
 	createTodoInputDialog(state.inputDialogContainer);
@@ -171,9 +204,16 @@ export const initializeDom = () => {
 		get state() {
 			return state;
 		},
+		get currentView() {
+			return state.currentView;
+		},
+		set currentView(newView) {
+			state.currentView = newView;
+		},
 
 		...canCreateTodoDom(state),
 		...canCreateFolderDom(state),
-		...canUpdateFolderOption(state)
+		...canUpdateFolderOption(state),
+		...canCleanTodoContainer(state),
 	};
 };
