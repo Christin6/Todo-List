@@ -1,27 +1,37 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Todo List</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-    </head>
-    <body>
-        <nav id="side-bar">
-            <button id="new-todo-btn">+ Add Task</button>
-            <section>
-                <button id="all-btn">📌 All Todo</button>
-                <button id="today-btn">☀️ Today</button>
-                <button id="tomorrow-btn">⏩ Tomorrow</button>
-            </section>
-            <section id="folders"></section>
-            <button id="new-folder-btn">+ New Folder</button>
-        </nav>
-        <main>
-            <section id="todo-list"></section>
-            <div id="new-todo-input-dialog-container"></div>
-            <div id="new-folder-input-dialog-container"></div>
-        </main>
-    </body>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Todo List</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+    <nav id="side-bar">
+        <button id="new-todo-btn">+ Add Task</button>
+        <section>
+            <button id="all-btn">📌 All Todo</button>
+            <button id="today-btn">☀️ Today</button>
+            <button id="tomorrow-btn">⏩ Tomorrow</button>
+        </section>
+        <section id="folders"></section>
+        <button id="new-folder-btn">+ New Folder</button>
+    </nav>
+    <main>
+        <section id="todo-list"></section>
+        <div id="new-todo-input-dialog-container"></div>
+        <div id="new-folder-input-dialog-container"></div>
+        <dialog role="dialog" id="todo-expand-dialog">
+            <input type="checkbox" name="todo-checkbox" class="todo-checkbox">
+            <p class="todo-title">${todo.title}</p>
+            <p class="todo-desc">${todo.description}</p>
+            <p class="todo-due">${todo-due}</p>
+            <select name="priority" class="priority-input"></select>
+        </dialog>
+    </main>
+</body>
+
 </html>

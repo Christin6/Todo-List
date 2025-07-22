@@ -1,6 +1,16 @@
 import { format } from "date-fns";
 import { searchFolder, searchTodoBasedOnFolder } from "./util";
 
+const expandTodo = (todo, folder, target) => {
+	const text = `<dialog role="dialog" id="todo-expand-dialog" open>
+            <input type="checkbox" name="todo-checkbox" class="todo-checkbox">
+            <p class="todo-title">${todo.title}</p>
+            <p class="todo-desc">${todo.description}</p>
+            <p class="todo-due">${todo.dueDate}</p>
+            <select name="priority" class="priority-input"></select>
+        </dialog>`;
+};
+
 const createTodoDom = (todo, folder, target) => {
 	let checkBox = document.createElement("input");
 	checkBox.type = "checkbox";
@@ -75,6 +85,8 @@ const createTodoDom = (todo, folder, target) => {
 		folder.deleteItem(todo);
 		target.removeChild(container);
 	});
+
+	editBtn.addEventListener("click", () => {});
 
 	target.appendChild(container);
 };
@@ -179,7 +191,7 @@ export const initializeDom = () => {
 		todayBtn: document.getElementById("today-btn"),
 		tomorrowBtn: document.getElementById("tomorrow-btn"),
 		foldersSect: document.getElementById("folders"),
-		newTodoBtn: document.getElementById("new-todo-btn"),
+		newidTodoBtn: document.getElementById("new-todo-btn"),
 		todoList: document.getElementById("todo-list"),
 		newFolderBtn: document.getElementById("new-folder-btn"),
 		inputDialogContainer: document.getElementById(
