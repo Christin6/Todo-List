@@ -19,9 +19,25 @@ const createTodoDom = (todo, folder, target) => {
 	dueDateP.classList.add("todo-due");
 	dueDateP.innerHTML = format(todo.dueDate, "yyyy-MM-dd KK:mm a");
 
+	let otherBtn = document.createElement("button");
+	otherBtn.classList.add("todo-other-btn");
+	otherBtn.innerText = "・・・";
+
 	let delBtn = document.createElement("button");
 	delBtn.classList.add("todo-del-btn");
-	delBtn.innerHTML = "🗑️";
+	delBtn.innerText = "🗑️ Delete task";
+
+	let editBtn = document.createElement("button");
+	editBtn.classList.add("todo-edit-btn");
+	editBtn.innerText = "✏️ Edit task";
+
+	let dropDownOptionsContainer = document.createElement("div");
+	dropDownOptionsContainer.append(editBtn, delBtn);
+	dropDownOptionsContainer.style.display = "none";
+
+	let dropDownContainer = document.createElement("div");
+	dropDownContainer.classList.add("todo-dropdown-menu");
+	dropDownContainer.append(otherBtn, dropDownOptionsContainer);
 
 	let div = document.createElement("div");
 	div.classList.add("todo-info-div");
@@ -29,7 +45,7 @@ const createTodoDom = (todo, folder, target) => {
 
 	let container = document.createElement("div");
 	container.classList.add("todo-container");
-	container.append(checkBox, div, delBtn);
+	container.append(checkBox, div, dropDownContainer);
 
 	container.style.borderLeft = `5px solid ${todo.priority}`;
 
@@ -41,6 +57,17 @@ const createTodoDom = (todo, folder, target) => {
 		} else {
 			div.style.textDecoration = "none";
 			div.style.color = "#000";
+		}
+	});
+
+	otherBtn.addEventListener("click", (e) => {
+		e.stopPropagation();
+		dropDownOptionsContainer.style.display = "";
+	});
+
+	document.documentElement.addEventListener("click", () => {
+		if (dropDownOptionsContainer.style.display === "") {
+			dropDownOptionsContainer.style.display = "none";
 		}
 	});
 

@@ -116,6 +116,24 @@ main {
 	color: var(--low-contrast-text-color);
 }
 
-.todo-del-btn:hover {
-    background-color: red;
+.todo-dropdown-menu {
+	display: inline-block;
+	align-self: center;
+}
+
+.todo-dropdown-menu div {
+	position: absolute;
+	z-index: 1;
+}
+
+.todo-dropdown-menu div button {
+	padding: 0.5rem;
+	width: fit-content;
+	font-size: 0.8rem;
+}
+
+.todo-other-btn {
+	width: 50px;
+	font-size: 0.5rem;
+	padding: 0.5rem;
 }
