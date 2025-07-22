@@ -148,6 +148,7 @@ const canCleanTodoContainer = (state) => {
 
 export const initializeDom = () => {
 	let state = {
+		allBtn: document.getElementById("all-btn"),
 		todayBtn: document.getElementById("today-btn"),
 		tomorrowBtn: document.getElementById("tomorrow-btn"),
 		foldersSect: document.getElementById("folders"),

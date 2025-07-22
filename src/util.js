@@ -48,12 +48,10 @@ export const searchTodoBasedOnFolder = (folderName, container) => {
     return [];
 };
 
-export function checkFolderItems(target) {
-	// for debugging
+export function showAllItems(target, fun, dom) {
 	for (let i = 0; i < target.length; i++) {
-		console.log("Folder " + target[i].name + " items:");
 		for (let p = 0; p < target[i].items.length; p++) {
-			console.log(`${target[i].items[p].title}`);
+			fun(target[i].items[p], target[i], dom);
 		}
 	}
 }

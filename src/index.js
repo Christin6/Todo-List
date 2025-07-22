@@ -8,7 +8,7 @@ import {
 	checkTodoPriorityInput,
 	checkFolderTitleInput,
 	searchFolder,
-	checkFolderItems,
+	showAllItems,
 	searchTodoBasedOnDate,
 } from "./util.js";
 
@@ -65,6 +65,12 @@ domControl.state.submitFolderInput.addEventListener("click", () => {
 	folderContainer.push(folder);
 	domControl.createFolderDom(folder, folderContainer);
 	domControl.updateFolderOption(folder);
+});
+
+domControl.state.allBtn.addEventListener("click", () => {
+	domControl.currentView = "all";
+	domControl.cleanTodoContainer();
+	showAllItems(folderContainer, domControl.createTodoDom, domControl.state.todoList);
 });
 
 domControl.state.todayBtn.addEventListener("click", () => {
