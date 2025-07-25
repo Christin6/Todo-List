@@ -1,17 +1,84 @@
 import { format } from "date-fns";
 import { searchFolder, searchTodoBasedOnFolder } from "./util";
 
-const expandTodo = (todo, folder, target) => {
-	const text = `<dialog role="dialog" id="todo-expand-dialog" open>
-            <input type="checkbox" name="todo-checkbox" class="todo-checkbox">
-            <p class="todo-title">${todo.title}</p>
-            <p class="todo-desc">${todo.description}</p>
-            <p class="todo-due">${todo.dueDate}</p>
-            <select name="priority" class="priority-input"></select>
-        </dialog>`;
+const createTodoEditDialog = (todo, todoContainer, folderContainer) => {
+	const dialog = `<dialog role="dialog" id="todo-edit-dialog" open>
+            <input type="text" name="title" id="edit-title-input" value="${todo.title}" placeholder="Title">
+			<input type="text" name="desc" id="edit-desc-input" value="${todo.description}" placeholder="Description">
+			<input type="datetime-local" name="due-date" id="edit-duedate-input" value="${format(todo.dueDate, "yyyy-MM-dd")}T${format(todo.dueDate, "HH:mm")}" min="${format(new Date(),"yyyy-MM-dd")}T${format(new Date(), "HH:mm")}">
+			<select name="priority" id="edit-priority-input">
+				<option value="">--Select the priority--</option>
+				<option value="red" ${todo.priority === 'red' ? 'selected' : ''}>🔴High</option>
+				<option value="yellow" ${todo.priority === 'yellow' ? 'selected' : ''}>🟡Medium</option>
+				<option value="green" ${todo.priority === 'green' ? 'selected' : ''}>🟢Low</option>
+				<option value="white" ${todo.priority === 'white' ? 'selected' : ''}>⚪Neutral</option>
+			</select>
+			<select name="todo-folder" id="edit-folder-input">
+				${folderContainer.map(f => 
+					`<option value="${f.name}" ${f.name === todo.folder ? 'selected' : ''}>${f.name}</option>`
+				).join('')}
+			</select>
+
+			<form method="dialog">
+				<button type="submit" id="save-todo-edit">Save Changes</button>
+				<button type="button" id="cancel-todo-edit">Cancel</button>
+			</form>
+		</dialog>`;
+
+	document.body.insertAdjacentHTML('beforeend', dialog);
+
+	const editDialog = document.getElementById('todo-edit-dialog');
+	const saveBtn = document.getElementById('save-todo-edit');
+	const cancelBtn = document.getElementById('cancel-todo-edit');
+	
+	const titleInput = document.getElementById('edit-title-input');
+	const descInput = document.getElementById('edit-desc-input');
+	const dueDateInput = document.getElementById('edit-duedate-input');
+	const priorityInput = document.getElementById('edit-priority-input');
+	const folderInput = document.getElementById('edit-folder-input');
+	
+	const cleanup = () => {
+		editDialog.remove();
+	};
+	
+	saveBtn.addEventListener('click', (e) => {
+		e.preventDefault();
+		
+		const oldFolder = searchFolder(todo.folder, folderContainer);
+		const newFolderName = folderInput.value;
+		const newFolder = searchFolder(newFolderName, folderContainer);
+		
+		todo.title = titleInput.value || "New Todo";
+		todo.description = descInput.value;
+		todo.dueDate = new Date(dueDateInput.value);
+		todo.priority = priorityInput.value || "white";
+		
+		if (todo.folder !== newFolderName) {
+			oldFolder.deleteItem(todo);
+			newFolder.addItem(todo);
+			todo.folder = newFolderName;
+		}
+		
+		todoContainer.remove();
+		
+		cleanup();
+		editDialog.close();
+		
+		// Trigger a refresh of the current view
+		window.dispatchEvent(new CustomEvent('todoUpdated', { 
+			detail: { todo, oldFolder: oldFolder.name, newFolder: newFolderName }
+		}));
+	});
+	
+	cancelBtn.addEventListener('click', () => {
+		cleanup();
+		editDialog.close();
+	});
+	
+	editDialog.addEventListener('close', cleanup);
 };
 
-const createTodoDom = (todo, folder, target) => {
+const createTodoDom = (todo, folder, target, folderContainer) => {
 	let checkBox = document.createElement("input");
 	checkBox.type = "checkbox";
 	checkBox.classList.add("todo-checkbox");
@@ -59,6 +126,11 @@ const createTodoDom = (todo, folder, target) => {
 
 	container.style.borderLeft = `5px solid ${todo.priority}`;
 
+	if (todo.checked) {
+		div.style.textDecoration = "line-through";
+		div.style.color = "#828282";
+	}
+
 	checkBox.addEventListener("change", () => {
 		todo.checked = !todo.checked;
 		if (todo.checked) {
@@ -86,14 +158,16 @@ const createTodoDom = (todo, folder, target) => {
 		target.removeChild(container);
 	});
 
-	editBtn.addEventListener("click", () => {});
+	editBtn.addEventListener("click", () => {
+		createTodoEditDialog(todo, container, folderContainer);
+	});
 
 	target.appendChild(container);
 };
 
 const canCreateTodoDom = (state) => {
 	return {
-		createTodoDom: (todo, folder, target) => createTodoDom(todo, folder, target),
+		createTodoDom: (todo, folder, target, folderContainer) => createTodoDom(todo, folder, target, folderContainer),
 	};
 };
 
@@ -118,7 +192,8 @@ const canCreateFolderDom = (state) => {
 					createTodoDom(
 						todo[i],
 						searchFolder(todo[i].folder, folderContainer),
-						state.todoList
+						state.todoList,
+						folderContainer
 					);
 				}
 			});
@@ -191,7 +266,7 @@ export const initializeDom = () => {
 		todayBtn: document.getElementById("today-btn"),
 		tomorrowBtn: document.getElementById("tomorrow-btn"),
 		foldersSect: document.getElementById("folders"),
-		newidTodoBtn: document.getElementById("new-todo-btn"),
+		newTodoBtn: document.getElementById("new-todo-btn"),
 		todoList: document.getElementById("todo-list"),
 		newFolderBtn: document.getElementById("new-folder-btn"),
 		inputDialogContainer: document.getElementById(

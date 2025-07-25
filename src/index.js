@@ -18,6 +18,60 @@ let folderContainer = [];
 folderContainer.push(createFolder("📬 Inbox", "red"));
 domControl.createFolderDom(folderContainer[0], folderContainer)
 
+const refreshCurrentView = () => {
+	domControl.cleanTodoContainer();
+	
+	if (domControl.currentView === "all") {
+		showAllItems(folderContainer, (todo, folder) => {
+			domControl.createTodoDom(todo, folder, domControl.state.todoList, folderContainer);
+		}, domControl.state.todoList);
+	} else if (domControl.currentView === "today") {
+		let todayDate = format(new Date(), "dd/MM/yyyy");
+		let todos = searchTodoBasedOnDate(todayDate, folderContainer);
+		for (let todo of todos) {
+			domControl.createTodoDom(
+				todo,
+				searchFolder(todo.folder, folderContainer),
+				domControl.state.todoList,
+				folderContainer
+			);
+		}
+	} else if (domControl.currentView === "tomorrow") {
+		let currentDate = new Date();
+		let tomorrow = new Date(currentDate);
+		tomorrow.setDate(currentDate.getDate() + 1);
+		let tomorrowDate = format(tomorrow, "dd/MM/yyyy");
+		let todos = searchTodoBasedOnDate(tomorrowDate, folderContainer);
+		for (let todo of todos) {
+			domControl.createTodoDom(
+				todo,
+				searchFolder(todo.folder, folderContainer),
+				domControl.state.todoList,
+				folderContainer
+			);
+		}
+	} else {
+		// Folder view
+		let folder = searchFolder(domControl.currentView, folderContainer);
+		if (folder) {
+			for (let todo of folder.items) {
+				domControl.createTodoDom(
+					todo,
+					folder,
+					domControl.state.todoList,
+					folderContainer
+				);
+			}
+		}
+	}
+};
+
+// Listen for todo updates from the edit dialog
+window.addEventListener('todoUpdated', (event) => {
+	refreshCurrentView();
+});
+
+
 domControl.state.submitTodoInput.addEventListener("click", () => {
 	let item = createToDo(
 		checkTodoTitleInput(domControl.state.newTodoTitleInput.value),
@@ -52,7 +106,8 @@ domControl.state.submitTodoInput.addEventListener("click", () => {
 		domControl.createTodoDom(
 			item,
 			storeToFolder,
-			domControl.state.todoList
+			domControl.state.todoList,
+			folderContainer
 		);
 	}
 });
@@ -84,7 +139,8 @@ domControl.state.todayBtn.addEventListener("click", () => {
 		domControl.createTodoDom(
 			todo[i],
 			searchFolder(todo[i].folder, folderContainer),
-			domControl.state.todoList
+			domControl.state.todoList,
+			folderContainer
 		);
 	}
 });
@@ -102,16 +158,18 @@ domControl.state.tomorrowBtn.addEventListener("click", () => {
 		domControl.createTodoDom(
 			todo[i],
 			searchFolder(todo[i].folder, folderContainer),
-			domControl.state.todoList
+			domControl.state.todoList,
+			folderContainer
 		);
 	}
 });
 
 // initial/example todo item
-const todo = createToDo("Buy milk", "Get 2% milk", "2024-01-15", "red");
+const todo = createToDo("Buy milk", "Get 2% milk", "2024-01-15", "red", "📬 Inbox");
 domControl.createTodoDom(
 	todo,
-	searchFolder("📬 Inbox", folderContainer),
-	domControl.state.todoList
+	folderContainer[0],
+	domControl.state.todoList,
+	folderContainer
 );
 searchFolder("📬 Inbox", folderContainer).addItem(todo);
