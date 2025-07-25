@@ -24,7 +24,7 @@ const refreshCurrentView = () => {
 	if (domControl.currentView === "all") {
 		showAllItems(folderContainer, (todo, folder) => {
 			domControl.createTodoDom(todo, folder, domControl.state.todoList, folderContainer);
-		}, domControl.state.todoList);
+		}, domControl.state.todoList, folderContainer);
 	} else if (domControl.currentView === "today") {
 		let todayDate = format(new Date(), "dd/MM/yyyy");
 		let todos = searchTodoBasedOnDate(todayDate, folderContainer);
@@ -125,7 +125,7 @@ domControl.state.submitFolderInput.addEventListener("click", () => {
 domControl.state.allBtn.addEventListener("click", () => {
 	domControl.currentView = "all";
 	domControl.cleanTodoContainer();
-	showAllItems(folderContainer, domControl.createTodoDom, domControl.state.todoList);
+	showAllItems(folderContainer, domControl.createTodoDom, domControl.state.todoList, folderContainer);
 });
 
 domControl.state.todayBtn.addEventListener("click", () => {
