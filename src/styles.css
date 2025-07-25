@@ -5,7 +5,15 @@
 	--secondary-color: #e6e6e6;
 	--main-text-color: black;
 	--low-contrast-text-color: gray;
-    --bg-color: white;
+	--bg-color: white;
+	--shadow-color: 257deg 35% 6%;
+	--shadow-elevation-low: 0.3px 0.5px 0.7px hsl(var(--shadow-color) / 0.34),
+		0.4px 0.8px 1px -1.2px hsl(var(--shadow-color) / 0.34),
+		1px 2px 2.5px -2.5px hsl(var(--shadow-color) / 0.34);
+	--shadow-elevation-medium: 0.3px 0.5px 0.7px hsl(var(--shadow-color) / 0.36),
+		0.8px 1.6px 2px -0.8px hsl(var(--shadow-color) / 0.36),
+		2.1px 4.1px 5.2px -1.7px hsl(var(--shadow-color) / 0.36),
+		5px 10px 12.6px -2.5px hsl(var(--shadow-color) / 0.36);
 }
 
 * {
@@ -14,14 +22,14 @@
 
 html {
 	font-family: "Open Sans", sans-serif;
-    background-color: var(--bg-color);
+	background-color: var(--bg-color);
 }
 
 body {
-    margin: 0;
-    display: grid;
-    height: 100vh;
-    grid-template-columns: 1fr 3fr;
+	margin: 0;
+	display: grid;
+	height: 100vh;
+	grid-template-columns: 1fr 3fr;
 	position: relative;
 }
 
@@ -46,38 +54,38 @@ button:hover {
 
 #side-bar,
 main {
-    padding: 1rem;
+	padding: 1rem;
 }
 
 #side-bar {
-    background-color: var(--secondary-color);
+	background-color: var(--secondary-color);
 }
 
 #side-bar button {
-    display: block;
-    background-color: var(--secondary-color);
-    width: 100%;
-    text-align: left;
+	display: block;
+	background-color: var(--secondary-color);
+	width: 100%;
+	text-align: left;
 }
 
 #side-bar button:hover {
-    filter: brightness(110%);
-    font-weight: 600;
+	filter: brightness(110%);
+	font-weight: 600;
 }
 
 #side-bar button:focus {
 	filter: brightness(110%);
-    font-weight: 600;
+	font-weight: 600;
 }
 
 #side-bar #new-todo-btn {
-    background-color: var(--accent-color);
-    margin-bottom: 1rem;
-    width: fit-content;
+	background-color: var(--accent-color);
+	margin-bottom: 1rem;
+	width: fit-content;
 }
 
 #side-bar #new-todo-btn:active {
-    padding: 7px 22px;
+	padding: 7px 22px;
 }
 
 #folders {
@@ -99,7 +107,7 @@ main {
 .todo-checkbox {
 	width: 25px;
 	height: 25px;
-    align-self: center;
+	align-self: center;
 }
 
 .todo-title,
@@ -136,4 +144,44 @@ main {
 	width: 50px;
 	font-size: 0.5rem;
 	padding: 0.5rem;
+}
+
+dialog {
+	position: fixed; /* Or absolute */
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	margin: auto; /* Centers horizontally and vertically */
+	width: fit-content;
+	height: fit-content;
+	border: none;
+	box-shadow: var(--shadow-elevation-medium);
+	border-radius: 15px;
+	padding: 2rem;
+}
+
+dialog input {
+	display: block;
+	border: none;
+	font-size: 1rem;
+}
+
+dialog #edit-title-input,
+dialog #title-input {
+	font-size: 1.3rem;
+}
+
+dialog select,
+dialog select option {
+	font-size: 1rem;
+	margin-top: 1rem;
+}
+
+dialog button {
+	margin-top: 1rem;
+}
+
+dialog input[type="datetime-local"] {
+	margin-top: 1rem;
 }

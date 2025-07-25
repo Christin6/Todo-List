@@ -203,7 +203,7 @@ const canCreateFolderDom = (state) => {
 	};
 };
 
-const createTodoInputDialog = (target) => {
+const createTodoInputDialog = () => {
 	const dialog = `<dialog role="dialog" id="new-todo-input-dialog">
                 <input type="text" name="title" id="title-input" placeholder="Title">
                 <input type="text" name="desc" id="desc-input" placeholder="Description">
@@ -226,10 +226,10 @@ const createTodoInputDialog = (target) => {
                     <button>Close</button>
                 </form>
             </dialog>`;
-	target.innerHTML = dialog;
+	document.body.insertAdjacentHTML('beforeend', dialog);
 };
 
-const createFolderInputDialog = (target) => {
+const createFolderInputDialog = () => {
 	const dialog = `<dialog role="dialog" id="new-folder-input-dialog">
                 <input type="text" name="folder-title" id="folder-title-input" placeholder="Folder Name">
                 <input type="color" name="folder-color" id="folder-color-input" placeholder="Folder Color">
@@ -239,7 +239,7 @@ const createFolderInputDialog = (target) => {
                     <button>Close</button>
                 </form>
             </dialog>`;
-	target.innerHTML = dialog;
+	document.body.insertAdjacentHTML('beforeend', dialog);
 };
 
 const canUpdateFolderOption = (state) => {
@@ -269,12 +269,6 @@ export const initializeDom = () => {
 		newTodoBtn: document.getElementById("new-todo-btn"),
 		todoList: document.getElementById("todo-list"),
 		newFolderBtn: document.getElementById("new-folder-btn"),
-		inputDialogContainer: document.getElementById(
-			"new-todo-input-dialog-container"
-		),
-		folderInputDialogContainer: document.getElementById(
-			"new-folder-input-dialog-container"
-		),
 
 		defaultPriority: new Map([
 			["🔴High", "red"],
@@ -285,7 +279,7 @@ export const initializeDom = () => {
 		currentView: "all", // or "tomorrow", or "today", or what folder is opened
 	};
 
-	createTodoInputDialog(state.inputDialogContainer);
+	createTodoInputDialog();
 	state.newTodoInput = document.getElementById("new-todo-input-dialog");
 	state.newTodoTitleInput = document.getElementById("title-input");
 	state.newTodoDescInput = document.getElementById("desc-input");
@@ -294,7 +288,7 @@ export const initializeDom = () => {
 	state.newTodoFolderInput = document.getElementById("folder-input");
 	state.submitTodoInput = document.getElementById("submit-todo-input");
 
-	createFolderInputDialog(state.folderInputDialogContainer);
+	createFolderInputDialog();
 	state.newFolderInput = document.getElementById("new-folder-input-dialog");
 	state.newFolderTitleInput = document.getElementById("folder-title-input");
 	state.newFolderColorInput = document.getElementById("folder-color-input");
