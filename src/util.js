@@ -1,22 +1,52 @@
 import { format } from "date-fns";
+import { checkTodoTitleDuplicate, checkFolderTitleDuplicate } from "./storage.js";
 
 export const checkTodoTitleInput = (target) => {
-	if (target === "") {
-		return "New Todo";
+	let title = target;
+	let num = 0;
+
+	if (title === "") {
+		title = "New Todo";
 	}
-	return target;
+
+	while (checkTodoTitleDuplicate(title)) {
+		if (title.includes(num)) {
+			let newTitle = title.replace(num, "");
+			num++;
+			title = `${newTitle}${num}`;
+		} else {
+			title += num;
+		}
+	}
+	return title;
 };
+
 export const checkTodoPriorityInput = (target) => {
 	if (target === "") {
 		return "white";
 	}
 	return target;
 };
+
 export const checkFolderTitleInput = (target) => {
-	if (target === "") {
-		return "New Folder";
+	let title = target;
+	let num = 0;
+
+	if (title === "") {
+		title = "New Folder";
 	}
-	return target;
+
+	while (checkFolderTitleDuplicate(title)) {
+		if (title.includes(num)) {
+			let newTitle = title.replace(num, "");
+			num++;
+			title = `${newTitle}${num}`;
+		} else {
+			title += num;
+		}
+	}
+
+	return title;
 };
 
 export const searchFolder = (folderName, container) => { // get folder from container

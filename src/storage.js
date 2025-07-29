@@ -78,6 +78,28 @@ export const autoSave = () => {
     }, 500); // autosave every 500 ms
 };
 
+export const checkTodoTitleDuplicate = (titleToCheck) => {
+    const folderContainer = getFolderContainer();
+    for (let folder of folderContainer) {
+        for (let todo of folder.items) {
+            if (todo.title === titleToCheck) {
+                return true;
+            }
+        }
+    }
+    return false;
+};
+
+export const checkFolderTitleDuplicate = (titleToCheck) => {
+    const folderContainer = getFolderContainer();
+    for (let folder of folderContainer) {
+        if (folder.name === titleToCheck) {
+            return true;
+        }
+    }
+    return false;
+};
+
 export const addTodo = (title, description, dueDate, priority, folderName) => {
     const folderContainer = getFolderContainer();
     const todo = createToDo(title, description, dueDate, priority, folderName);
