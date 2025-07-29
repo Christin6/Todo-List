@@ -1,7 +1,5 @@
 import "./styles.css";
 import { format } from "date-fns";
-import { createToDo } from "./todos.js";
-import { createFolder } from "./folder.js";
 import { initializeDom } from "./domControl.js";
 import {
 	checkTodoTitleInput,
@@ -11,14 +9,26 @@ import {
 	showAllItems,
 	searchTodoBasedOnDate,
 } from "./util.js";
+import { 
+    getFolderContainer,
+    addTodo,
+    addFolder
+} from "./storage.js";
 
 const domControl = initializeDom();
 
-let folderContainer = [];
-folderContainer.push(createFolder("📬 Inbox", "red"));
-domControl.createFolderDom(folderContainer[0], folderContainer)
+const initializeFolders = () => {
+	const folderContainer = getFolderContainer();
+
+	folderContainer.forEach(folder => {
+		domControl.createFolderDom(folder, folderContainer);
+	});
+
+	refreshCurrentView();
+};
 
 const refreshCurrentView = () => {
+	const folderContainer = getFolderContainer();
 	domControl.cleanTodoContainer();
 	
 	if (domControl.currentView === "all") {
@@ -66,6 +76,8 @@ const refreshCurrentView = () => {
 	}
 };
 
+initializeFolders();
+
 // Listen for todo updates from the edit dialog
 window.addEventListener('todoUpdated', (event) => {
 	refreshCurrentView();
@@ -73,38 +85,38 @@ window.addEventListener('todoUpdated', (event) => {
 
 
 domControl.state.submitTodoInput.addEventListener("click", () => {
-	let item = createToDo(
+	let todo = addTodo(
 		checkTodoTitleInput(domControl.state.newTodoTitleInput.value),
 		domControl.state.newTodoDescInput.value,
 		domControl.state.newTodoDuedateInput.value,
 		checkTodoPriorityInput(domControl.state.newTodoPriorityInput.value),
 		domControl.state.newTodoFolderInput.value
 	);
-	let shouldShowTodo = false;
 
-	let storeToFolder = searchFolder(item.folder, folderContainer);
-	storeToFolder.addItem(item);
+	let shouldShowTodo = false;
+	const folderContainer = getFolderContainer();
+	let storeToFolder = searchFolder(todo.folder, folderContainer);
 
 	if (domControl.currentView === "all") {
 		shouldShowTodo = true;
 	} else if (domControl.currentView === "today") {
 		let todayDate = format(new Date(), "dd/MM/yyyy");
-		let todoDate = format(item.dueDate, "dd/MM/yyyy");
+		let todoDate = format(todo.dueDate, "dd/MM/yyyy");
 		shouldShowTodo = todoDate === todayDate;
 	} else if (domControl.currentView === "tomorrow") {
 		let currentDate = new Date();
 		let tomorrow = new Date(currentDate);
 		tomorrow.setDate(currentDate.getDate() + 1);
 		let tomorrowDate = format(tomorrow, "dd/MM/yyyy");
-		let todoDate = format(item.dueDate, "dd/MM/yyyy");
+		let todoDate = format(todo.dueDate, "dd/MM/yyyy");
 		shouldShowTodo = todoDate === tomorrowDate;
 	} else {
-		shouldShowTodo = item.folder === domControl.currentView;
+		shouldShowTodo = todo.folder === domControl.currentView;
 	}
 
 	if (shouldShowTodo) {
 		domControl.createTodoDom(
-			item,
+			todo,
 			storeToFolder,
 			domControl.state.todoList,
 			folderContainer
@@ -113,63 +125,26 @@ domControl.state.submitTodoInput.addEventListener("click", () => {
 });
 
 domControl.state.submitFolderInput.addEventListener("click", () => {
-	let folder = createFolder(
+	let folder = addFolder(
 		checkFolderTitleInput(domControl.state.newFolderTitleInput.value),
 		domControl.state.newFolderColorInput.value
 	);
-	folderContainer.push(folder);
+	const folderContainer = getFolderContainer();
 	domControl.createFolderDom(folder, folderContainer);
 	domControl.updateFolderOption(folder);
 });
 
 domControl.state.allBtn.addEventListener("click", () => {
 	domControl.currentView = "all";
-	domControl.cleanTodoContainer();
-	showAllItems(folderContainer, domControl.createTodoDom, domControl.state.todoList, folderContainer);
+	refreshCurrentView();
 });
 
 domControl.state.todayBtn.addEventListener("click", () => {
 	domControl.currentView = "today";
-	domControl.cleanTodoContainer();
-	let todo = searchTodoBasedOnDate(
-		format(new Date(), "dd/MM/yyyy"),
-		folderContainer
-	);
-	for (let i = 0; i < todo.length; i++) {
-		domControl.createTodoDom(
-			todo[i],
-			searchFolder(todo[i].folder, folderContainer),
-			domControl.state.todoList,
-			folderContainer
-		);
-	}
+	refreshCurrentView();
 });
 
 domControl.state.tomorrowBtn.addEventListener("click", () => {
 	domControl.currentView = "tomorrow";
-	domControl.cleanTodoContainer();
-	let currentDate = new Date();
-	let tomorrow = currentDate.setDate(currentDate.getDate() + 1);
-	let todo = searchTodoBasedOnDate(
-		format(tomorrow, "dd/MM/yyyy"),
-		folderContainer
-	);
-	for (let i = 0; i < todo.length; i++) {
-		domControl.createTodoDom(
-			todo[i],
-			searchFolder(todo[i].folder, folderContainer),
-			domControl.state.todoList,
-			folderContainer
-		);
-	}
+	refreshCurrentView();
 });
-
-// initial/example todo item
-const todo = createToDo("Buy milk", "Get 2% milk", "2024-01-15", "red", "📬 Inbox");
-domControl.createTodoDom(
-	todo,
-	folderContainer[0],
-	domControl.state.todoList,
-	folderContainer
-);
-searchFolder("📬 Inbox", folderContainer).addItem(todo);

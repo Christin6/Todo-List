@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { searchFolder, searchTodoBasedOnFolder } from "./util";
+import { getFolderContainer, deleteTodo, updateTodoChecked, updateTodo } from "./storage.js";
 
 const createTodoEditDialog = (todo, todoContainer, folderContainer) => {
 	const dialog = `<dialog role="dialog" id="todo-edit-dialog" open>
@@ -43,31 +44,23 @@ const createTodoEditDialog = (todo, todoContainer, folderContainer) => {
 	
 	saveBtn.addEventListener('click', (e) => {
 		e.preventDefault();
+
+		const newData = {
+			title: titleInput.value || "New Todo",
+			description: descInput.value,
+			dueDate: new Date(dueDateInput.value),
+			priority: priorityInput.value || "white",
+			folder: folderInput.value,
+			checked: todo.checked
+		};
 		
-		const oldFolder = searchFolder(todo.folder, folderContainer);
-		const newFolderName = folderInput.value;
-		const newFolder = searchFolder(newFolderName, folderContainer);
-		
-		todo.title = titleInput.value || "New Todo";
-		todo.description = descInput.value;
-		todo.dueDate = new Date(dueDateInput.value);
-		todo.priority = priorityInput.value || "white";
-		
-		if (todo.folder !== newFolderName) {
-			oldFolder.deleteItem(todo);
-			newFolder.addItem(todo);
-			todo.folder = newFolderName;
-		}
-		
+		updateTodo(todo, newData);
 		todoContainer.remove();
-		
 		cleanup();
 		editDialog.close();
 		
 		// Trigger a refresh of the current view
-		window.dispatchEvent(new CustomEvent('todoUpdated', { 
-			detail: { todo, oldFolder: oldFolder.name, newFolder: newFolderName }
-		}));
+		window.dispatchEvent(new CustomEvent('todoUpdated'));
 	});
 	
 	cancelBtn.addEventListener('click', () => {
@@ -132,8 +125,10 @@ const createTodoDom = (todo, folder, target, folderContainer) => {
 	}
 
 	checkBox.addEventListener("change", () => {
-		todo.checked = !todo.checked;
-		if (todo.checked) {
+		const newCheckedStatus = !todo.checked;
+		updateTodoChecked(todo, newCheckedStatus);
+
+		if (newCheckedStatus) {
 			div.style.textDecoration = "line-through";
 			div.style.color = "#828282";
 		} else {
@@ -154,7 +149,7 @@ const createTodoDom = (todo, folder, target, folderContainer) => {
 	});
 
 	delBtn.addEventListener("click", () => {
-		folder.deleteItem(todo);
+		deleteTodo(todo);
 		target.removeChild(container);
 	});
 
