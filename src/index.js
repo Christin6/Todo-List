@@ -21,10 +21,13 @@ const domControl = initializeDom();
 const initializeFolders = () => {
 	const folderContainer = getFolderContainer();
 
+	domControl.state.foldersSect.innerHTML = "";
+
 	folderContainer.forEach(folder => {
 		domControl.createFolderDom(folder, folderContainer);
 	});
 
+	domControl.state.newTodoFolderInput.innerHTML = "";
 	for (let folder of folderContainer) {
 		domControl.updateFolderOption(folder);
 	}
@@ -68,7 +71,7 @@ const refreshCurrentView = () => {
 	} else {
 		// Folder view
 		let folder = searchFolder(domControl.currentView, folderContainer);
-		if (folder) {
+		if (folder && folder.items) {
 			for (let todo of folder.items) {
 				domControl.createTodoDom(
 					todo,
@@ -98,7 +101,7 @@ domControl.state.submitTodoInput.addEventListener("click", () => {
 		domControl.state.newTodoFolderInput.value
 	);
 
-	refreshCurrentView();
+	initializeFolders();
 });
 
 domControl.state.submitFolderInput.addEventListener("click", () => {
@@ -106,9 +109,8 @@ domControl.state.submitFolderInput.addEventListener("click", () => {
 		checkFolderTitleInput(domControl.state.newFolderTitleInput.value),
 		domControl.state.newFolderColorInput.value
 	);
-	const folderContainer = getFolderContainer();
-	domControl.createFolderDom(folder, folderContainer);
-	domControl.updateFolderOption(folder);
+	
+	initializeFolders();
 });
 
 domControl.state.allBtn.addEventListener("click", () => {
