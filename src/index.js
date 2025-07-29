@@ -24,6 +24,10 @@ const initializeFolders = () => {
 		domControl.createFolderDom(folder, folderContainer);
 	});
 
+	for (let folder of folderContainer) {
+		domControl.updateFolderOption(folder);
+	}
+
 	refreshCurrentView();
 };
 
@@ -85,7 +89,7 @@ window.addEventListener('todoUpdated', (event) => {
 
 
 domControl.state.submitTodoInput.addEventListener("click", () => {
-	let todo = addTodo(
+	addTodo(
 		checkTodoTitleInput(domControl.state.newTodoTitleInput.value),
 		domControl.state.newTodoDescInput.value,
 		domControl.state.newTodoDuedateInput.value,
@@ -93,35 +97,7 @@ domControl.state.submitTodoInput.addEventListener("click", () => {
 		domControl.state.newTodoFolderInput.value
 	);
 
-	let shouldShowTodo = false;
-	const folderContainer = getFolderContainer();
-	let storeToFolder = searchFolder(todo.folder, folderContainer);
-
-	if (domControl.currentView === "all") {
-		shouldShowTodo = true;
-	} else if (domControl.currentView === "today") {
-		let todayDate = format(new Date(), "dd/MM/yyyy");
-		let todoDate = format(todo.dueDate, "dd/MM/yyyy");
-		shouldShowTodo = todoDate === todayDate;
-	} else if (domControl.currentView === "tomorrow") {
-		let currentDate = new Date();
-		let tomorrow = new Date(currentDate);
-		tomorrow.setDate(currentDate.getDate() + 1);
-		let tomorrowDate = format(tomorrow, "dd/MM/yyyy");
-		let todoDate = format(todo.dueDate, "dd/MM/yyyy");
-		shouldShowTodo = todoDate === tomorrowDate;
-	} else {
-		shouldShowTodo = todo.folder === domControl.currentView;
-	}
-
-	if (shouldShowTodo) {
-		domControl.createTodoDom(
-			todo,
-			storeToFolder,
-			domControl.state.todoList,
-			folderContainer
-		);
-	}
+	refreshCurrentView();
 });
 
 domControl.state.submitFolderInput.addEventListener("click", () => {

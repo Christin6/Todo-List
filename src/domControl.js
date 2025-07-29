@@ -213,7 +213,6 @@ const createTodoInputDialog = () => {
                     <option value="">--Select the priority--</option>
                 </select>
 				<select name="todo-folder" id="folder-input">
-                    <option value="📬 Inbox">📬 Inbox</option>
                 </select>
 
                 <form method="dialog">
