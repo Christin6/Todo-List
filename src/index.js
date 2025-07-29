@@ -12,7 +12,8 @@ import {
 import { 
     getFolderContainer,
     addTodo,
-    addFolder
+    addFolder,
+	clearStorage
 } from "./storage.js";
 
 const domControl = initializeDom();

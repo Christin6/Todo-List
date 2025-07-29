@@ -125,7 +125,8 @@ const createTodoDom = (todo, folder, target, folderContainer) => {
 	}
 
 	checkBox.addEventListener("change", () => {
-		const newCheckedStatus = !todo.checked;
+		todo.checked = !todo.checked;
+		const newCheckedStatus = todo.checked;
 		updateTodoChecked(todo, newCheckedStatus);
 
 		if (newCheckedStatus) {
