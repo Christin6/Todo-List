@@ -188,6 +188,18 @@ export const updateTodo = (oldTodo, newData) => {
     return { updatedTodo, oldFolder: oldFolder?.name, newFolder: newFolder?.name };
 };
 
+export const deleteFolder = (folderToDelete) => {
+    const folderContainer = getFolderContainer();
+
+    for (let i=0; i < folderContainer.length; i++) {
+        if (folderContainer[i].name === folderToDelete.name) {
+            folderContainer.splice(i, 1);
+            saveFolderContainer(folderContainer);
+            break;
+        }
+    }
+}
+
 export const clearStorage = () => {
     try {
         localStorage.removeItem(STORAGE_KEYS.FOLDERS);

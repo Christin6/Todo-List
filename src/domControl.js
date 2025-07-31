@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { searchFolder, searchTodoBasedOnFolder } from "./util";
-import { getFolderContainer, deleteTodo, updateTodoChecked, updateTodo } from "./storage.js";
+import { deleteTodo, updateTodoChecked, updateTodo, deleteFolder, getFolderContainer } from "./storage.js";
 
 const createTodoEditDialog = (todo, todoContainer, folderContainer) => {
 	const dialog = `<dialog role="dialog" id="todo-edit-dialog" open>
@@ -173,10 +173,43 @@ const canCreateFolderDom = (state) => {
 			let titleBtn = document.createElement("button");
 			titleBtn.classList.add("folder-btn");
 			titleBtn.innerText = folder.name;
-
 			titleBtn.style.borderLeft = `5px solid ${folder.color}`;
 
-			titleBtn.addEventListener("click", () => {
+			let otherBtn = document.createElement("button");
+			otherBtn.classList.add("folder-other-btn");
+			otherBtn.innerText = "・・・";
+
+			let delBtn = document.createElement("button");
+			delBtn.classList.add("folder-del-btn");
+			delBtn.innerText = "🗑️ Delete Folder";
+
+			let editBtn = document.createElement("button");
+			editBtn.classList.add("folder-edit-btn");
+			editBtn.innerText = "✏️ Edit Folder";
+
+			let dropDownOptionsContainer = document.createElement("div");
+			dropDownOptionsContainer.append(editBtn, delBtn);
+			dropDownOptionsContainer.style.display = "none";
+
+			let dropDownContainer = document.createElement("div");
+			dropDownContainer.classList.add("folder-dropdown-menu");
+			dropDownContainer.append(otherBtn, dropDownOptionsContainer);
+
+			let container = document.createElement("div");
+			container.append(titleBtn, dropDownContainer);
+
+			otherBtn.addEventListener("click", (e) => {
+				e.stopPropagation();
+				dropDownOptionsContainer.style.display = "";
+			});
+
+			document.documentElement.addEventListener("click", () => {
+				if (dropDownOptionsContainer.style.display === "") {
+					dropDownOptionsContainer.style.display = "none";
+				}
+			});
+
+			container.addEventListener("click", () => {
 				state.currentView = folder.name;
 				state.todoList.innerHTML = "";
 
@@ -194,7 +227,26 @@ const canCreateFolderDom = (state) => {
 				}
 			});
 
-			state.foldersSect.appendChild(titleBtn);
+			delBtn.addEventListener("click", (e) => {
+				e.stopPropagation(); 
+
+				const currentFolderContainer = getFolderContainer();
+
+				if (currentFolderContainer.length <= 1) {
+					alert("This is the final folder, you need at least one folder to create a todo!");
+				} else if (currentFolderContainer.length > 1) {
+					deleteFolder(folder);
+					container.remove();
+
+					if (state.currentView === folder.name) {
+						state.currentView = "all";
+						// Trigger a refresh of the current view
+						window.dispatchEvent(new CustomEvent('folderDeleted'));
+					}
+				}
+			});
+
+			state.foldersSect.appendChild(container);
 		},
 	};
 };

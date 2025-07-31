@@ -91,6 +91,10 @@ window.addEventListener('todoUpdated', (event) => {
 	refreshCurrentView();
 });
 
+window.addEventListener("folderDeleted", (event) => {
+	refreshCurrentView();
+});
+
 
 domControl.state.submitTodoInput.addEventListener("click", () => {
 	addTodo(
