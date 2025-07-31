@@ -86,13 +86,15 @@ const refreshCurrentView = () => {
 
 initializeFolders();
 
-// Listen for todo updates from the edit dialog
+// Listen for updates from the edit dialogs
 window.addEventListener('todoUpdated', (event) => {
 	refreshCurrentView();
 });
-
+window.addEventListener('folderUpdated', (event) => {
+	initializeFolders();
+});
 window.addEventListener("folderDeleted", (event) => {
-	refreshCurrentView();
+	initializeFolders();
 });
 
 

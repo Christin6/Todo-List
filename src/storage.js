@@ -188,6 +188,24 @@ export const updateTodo = (oldTodo, newData) => {
     return { updatedTodo, oldFolder: oldFolder?.name, newFolder: newFolder?.name };
 };
 
+export const updateFolder = (oldFolder, newFolder) => {
+    const folderContainer = getFolderContainer();
+
+    for (let folder of folderContainer) {
+        if (folder.name === oldFolder.name) {
+            folder.name = newFolder.name;
+            folder.color = newFolder.color;
+
+            folder.items.forEach(todo => {
+                todo.folder = newFolder.name;
+            });
+
+            saveFolderContainer(folderContainer);
+            break;
+        }
+    }
+}
+
 export const deleteFolder = (folderToDelete) => {
     const folderContainer = getFolderContainer();
 

@@ -1,6 +1,6 @@
 import { format } from "date-fns";
 import { searchFolder, searchTodoBasedOnFolder } from "./util";
-import { deleteTodo, updateTodoChecked, updateTodo, deleteFolder, getFolderContainer } from "./storage.js";
+import { deleteTodo, updateTodoChecked, updateTodo, deleteFolder, updateFolder, getFolderContainer } from "./storage.js";
 
 const createTodoEditDialog = (todo, todoContainer, folderContainer) => {
 	const dialog = `<dialog role="dialog" id="todo-edit-dialog" open>
@@ -167,6 +167,55 @@ const canCreateTodoDom = (state) => {
 	};
 };
 
+const createFolderEditDialog = (folder, folderDomContainer) => {
+	const dialog = `<dialog role="dialog" id="folder-edit-dialog" open>
+            <input type="text" name="title" id="edit-folder-title-input" value="${folder.name}" placeholder="Folder Name">
+			<input type="color" name="folder-color" id="edit-folder-color-input" value="${folder.color}" placeholder="Folder Color">
+			
+			<form method="dialog">
+				<button type="submit" id="save-folder-edit">Save Changes</button>
+				<button type="button" id="cancel-folder-edit">Cancel</button>
+			</form>
+		</dialog>`;
+
+	document.body.insertAdjacentHTML('beforeend', dialog);
+
+	const editDialog = document.getElementById('folder-edit-dialog');
+	const saveBtn = document.getElementById('save-folder-edit');
+	const cancelBtn = document.getElementById('cancel-folder-edit');
+	
+	const titleInput = document.getElementById('edit-folder-title-input');
+	const colorInput = document.getElementById('edit-folder-color-input');
+	
+	const cleanup = () => {
+		editDialog.remove();
+	};
+	
+	saveBtn.addEventListener('click', (e) => {
+		e.preventDefault();
+
+		const newData = {
+			name: titleInput.value || "New Folder",
+			color: colorInput.value
+		};
+		
+		updateFolder(folder, newData);
+		folderDomContainer.remove();
+		cleanup();
+		editDialog.close();
+		
+		// Trigger a refresh of the current view
+		window.dispatchEvent(new CustomEvent('folderUpdated'));
+	});
+	
+	cancelBtn.addEventListener('click', () => {
+		cleanup();
+		editDialog.close();
+	});
+	
+	editDialog.addEventListener('close', cleanup);
+};
+
 const canCreateFolderDom = (state) => {
 	return {
 		createFolderDom: (folder, folderContainer) => {
@@ -244,6 +293,10 @@ const canCreateFolderDom = (state) => {
 						window.dispatchEvent(new CustomEvent('folderDeleted'));
 					}
 				}
+			});
+
+			editBtn.addEventListener("click", () => {
+				createFolderEditDialog(folder, container);
 			});
 
 			state.foldersSect.appendChild(container);

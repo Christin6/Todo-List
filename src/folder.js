@@ -35,6 +35,13 @@ export const createFolder = (name, color) => {
 			return state.color;
 		},
 
+		set name(newName) {
+			state.name = newName;
+		},
+		set color(newColor) {
+			state.color = newColor;
+		},
+
 		...canAddItem(state),
 		...canDeleteItem(state)
 	};
