@@ -220,7 +220,6 @@ const canCreateFolderDom = (state) => {
 	return {
 		createFolderDom: (folder, folderContainer) => {
 			let titleBtn = document.createElement("button");
-			titleBtn.classList.add("folder-btn");
 			titleBtn.innerText = folder.name;
 			titleBtn.style.borderLeft = `5px solid ${folder.color}`;
 
@@ -245,6 +244,7 @@ const canCreateFolderDom = (state) => {
 			dropDownContainer.append(otherBtn, dropDownOptionsContainer);
 
 			let container = document.createElement("div");
+			container.classList.add("folder-container");
 			container.append(titleBtn, dropDownContainer);
 
 			otherBtn.addEventListener("click", (e) => {

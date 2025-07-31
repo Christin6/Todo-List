@@ -61,14 +61,15 @@ main {
 	background-color: var(--secondary-color);
 }
 
-#side-bar button {
+#side-bar .main-btn {
 	display: block;
 	background-color: var(--secondary-color);
 	width: 100%;
 	text-align: left;
 }
 
-#side-bar button:hover {
+#side-bar button:hover,
+.folder-container:hover {
 	filter: brightness(110%);
 	font-weight: 600;
 }
@@ -76,6 +77,13 @@ main {
 #side-bar button:focus {
 	filter: brightness(110%);
 	font-weight: 600;
+}
+
+.folder-container {
+	display: flex;
+	width: 100%;
+	justify-content: space-between;
+	background-color: var(--secondary-color);
 }
 
 #side-bar #new-todo-btn {
@@ -124,23 +132,27 @@ main {
 	color: var(--low-contrast-text-color);
 }
 
-.todo-dropdown-menu {
+.todo-dropdown-menu,
+.folder-dropdown-menu {
 	display: inline-block;
 	align-self: center;
 }
 
-.todo-dropdown-menu div {
+.todo-dropdown-menu div,
+.folder-dropdown-menu div {
 	position: absolute;
 	z-index: 1;
 }
 
-.todo-dropdown-menu div button {
+.todo-dropdown-menu div button,
+.folder-dropdown-menu div button {
 	padding: 0.5rem;
 	width: fit-content;
 	font-size: 0.8rem;
 }
 
-.todo-other-btn {
+.todo-other-btn,
+.folder-other-btn {
 	width: 50px;
 	font-size: 0.5rem;
 	padding: 0.5rem;
